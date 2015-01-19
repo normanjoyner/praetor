@@ -82,7 +82,7 @@ Praetor.prototype.get_controlling_leader = function(){
         return peer.praetor.leader;
     });
 
-    return controllling_leaders[0];
+    return controlling_leaders[0];
 }
 
 Praetor.prototype.is_controlling_leader = function(){
