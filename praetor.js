@@ -36,11 +36,11 @@ function Praetor(options){
 
     this.legiond.on("listening", function(){
         self.legiond.join("praetor.ballot");
-        self.legiond.join("praetor.vote");
         self.legiond.join("praetor.promotion");
         self.legiond.join("praetor.demotion");
 
         if(self.options.leader_eligible){
+            self.legiond.join("praetor.vote");
             setTimeout(function(){
                 var peers = self.legiond.get_peers();
                 var leaders = _.filter(peers, function(peer){
