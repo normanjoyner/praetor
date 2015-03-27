@@ -1,6 +1,6 @@
 {
   "name": "praetor",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Leader election for legiond",
   "main": "application.js",
   "scripts": {
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/growbrosops/praetor",
   "dependencies": {
     "eventemitter2": "^0.4.14",
-    "legiond": "0.0.2",
+    "legiond": "0.0.3",
     "lodash": "^2.4.1"
   }
 }
