@@ -23,6 +23,7 @@ function Praetor(options){
         this.options.legiond.attributes = {};
 
     this.options.legiond.attributes.praetor = {
+        start_time: new Date().valueOf(),
         leader_eligible: this.options.leader_eligible,
         leader: false
     }
