@@ -15,15 +15,15 @@
     "leader",
     "election"
   ],
-  "author": "Norman Joyner <norman.joyner@gmail.com>",
-  "license": "GPLv2",
+  "author": "ContainerShip Developers <developers@containership.io>",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/containership/praetor/issues"
   },
   "homepage": "https://github.com/containership/praetor",
   "dependencies": {
     "eventemitter2": "^0.4.14",
-    "legiond": "1.0.2",
+    "legiond": "1.0.3",
     "lodash": "^2.4.1"
   }
 }
