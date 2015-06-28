@@ -7,7 +7,7 @@ praetor
 praetor is a leader election framework built atop [legiond](https://github.com/growbrosops/legiond).
 
 ###Author
-* Norman Joyner - <norman.joyner@gmail.com>
+ContainerShip Developers - developers@containership.io
 
 ##Getting Started
 
