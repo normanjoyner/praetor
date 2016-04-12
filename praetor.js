@@ -79,8 +79,9 @@ Praetor.prototype.demote = function(){
 Praetor.prototype.get_controlling_leader = function(){
     var peers = this.legiond.get_peers();
     peers.push(this.legiond.get_attributes());
+
     var controlling_leaders = _.filter(peers, function(peer){
-        return peer.praetor.leader;
+        return peer.praetor && peer.praetor.leader;
     });
 
     return controlling_leaders[0];
