@@ -1,95 +1,83 @@
-var _ = require("lodash");
-var EventEmitter = require("eventemitter2").EventEmitter2;
-var LegionD = require("legiond");
+'use strict';
 
-function Praetor(options){
-    var self = this;
+const election = require('./lib/election');
 
-    if(_.isUndefined(options))
-        options = {};
+const _ = require('lodash');
+const EventEmitter = require('eventemitter2').EventEmitter2;
+const LegionD = require('legiond');
 
-    this.actions = {};
-    this.events = {};
+class Praetor extends EventEmitter {
+    constructor(options) {
+        super();
 
-    this.options = _.defaults(options, {
-        initial_delay: undefined,
-        leader_eligible: true
-    });
+        this.actions = {};
+        this.events = {};
 
-    if(!_.has(this.options, "legiond"))
-        this.options.legiond = {};
+        this.options = options || {};
+        this.options = _.defaults(options, {
+            initial_delay: undefined,
+            leader_eligible: true
+        });
 
-    if(!_.has(this.options.legiond, "attributes"))
-        this.options.legiond.attributes = {};
+        this.options.legiond = this.options.legiond || {};
+        this.options.legiond.attributes = this.options.legiond.attributes || {};
 
-    this.options.legiond.attributes.praetor = {
-        start_time: new Date().valueOf(),
-        leader_eligible: this.options.leader_eligible,
-        leader: false
+        this.options.legiond.attributes.praetor = {
+            start_time: new Date().valueOf(),
+            leader_eligible: this.options.leader_eligible,
+            leader: false
+        };
+
+        this.legiond = new LegionD(this.options.legiond);
+        this.options.initial_delay = this.legiond.network.options.tcp_timeout + 1000;
+        election.Configure(this);
+
+        const self = this;
+
+        this.legiond.on('listening', () => {
+            self.legiond.join('praetor.ballot');
+            self.legiond.join('praetor.promotion');
+            self.legiond.join('praetor.demotion');
+
+            if(self.options.leader_eligible) {
+                self.legiond.join('praetor.vote');
+
+                setTimeout(() => {
+                    const peers = self.legiond.get_peers();
+                    const leaders = _.filter(peers, peer => peer.praetor && peer.praetor.leader);
+
+                    if(_.isEmpty(leaders)) {
+                        self.actions.elect();
+                    }
+                }, self.options.initial_delay);
+            }
+        });
+
+        this.legiond.on('error', (error) => {
+            self.emit('error', error);
+        });
     }
 
-    this.legiond = new LegionD(this.options.legiond);
-
-    if(_.isUndefined(this.options.initial_delay))
-        this.options.initial_delay = this.legiond.options.network.tcp_timeout + 1000;
-
-    require([__dirname, "lib", "election"].join("/"))(this);
-
-    this.legiond.on("listening", function(){
-        self.legiond.join("praetor.ballot");
-        self.legiond.join("praetor.promotion");
-        self.legiond.join("praetor.demotion");
-
-        if(self.options.leader_eligible){
-            self.legiond.join("praetor.vote");
-            setTimeout(function(){
-                var peers = self.legiond.get_peers();
-                var leaders = _.filter(peers, function(peer){
-                    if(peer.praetor.leader)
-                        return peer;
-                });
-
-                if(_.isEmpty(leaders))
-                    self.actions.elect();
-            }, self.options.initial_delay)
-        }
-    });
-
-    this.legiond.on("error", function(error){
-        self.emit("error", error);
-    });
-}
-
-Praetor.super_ = EventEmitter;
-Praetor.prototype = Object.create(EventEmitter.prototype, {
-    constructor: {
-        value: Praetor,
-        enumerable: false
+    promote() {
+        this.actions.promote();
     }
-});
 
-Praetor.prototype.promote = function(){
-    this.actions.promote();
+    demote() {
+        this.actions.demote();
+    }
+
+    get_controlling_leader() {
+        const peers = this.legiond.get_peers();
+        peers.push(this.legiond.get_attributes());
+        const controlling_leaders = _.filter(peers, peer => peer.praetor && peer.praetor.leader);
+
+        return controlling_leaders[0];
+    }
+
+    is_controlling_leader() {
+        const attributes = this.legiond.get_attributes();
+
+        return attributes.praetor.leader;
+    }
 }
-
-Praetor.prototype.demote = function(){
-    this.actions.demote();
-}
-
-Praetor.prototype.get_controlling_leader = function(){
-    var peers = this.legiond.get_peers();
-    peers.push(this.legiond.get_attributes());
-
-    var controlling_leaders = _.filter(peers, function(peer){
-        return peer.praetor && peer.praetor.leader;
-    });
-
-    return controlling_leaders[0];
-}
-
-Praetor.prototype.is_controlling_leader = function(){
-    var attributes = this.legiond.get_attributes();
-    return attributes.praetor.leader;
-}
-
 module.exports = Praetor;

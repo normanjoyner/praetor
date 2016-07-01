@@ -1,8 +1,11 @@
-var Praetor = require([__dirname, "praetor"].join("/"));
-var pkg = require([__dirname, "package"].join("/"));
+'use strict';
 
-module.exports = function(options){
-    var praetor = new Praetor(options);
+const pkg = require('./package.json');
+const Praetor = require('./praetor');
+
+module.exports = function(options) {
+    const praetor = new Praetor(options);
     praetor.version = pkg.version;
+
     return praetor;
-}
+};
