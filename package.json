@@ -1,6 +1,6 @@
 {
   "name": "praetor",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Leader election for legiond",
   "main": "application.js",
   "scripts": {
