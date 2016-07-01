@@ -4,8 +4,8 @@
   "description": "Leader election for legiond",
   "main": "application.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "./node_modules/.bin/eslint ."
+    "test": "mocha",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "lodash": "^2.4.1"
   },
   "devDependencies": {
-    "eslint": "^2.13.1"
+    "eslint": "^2.13.1",
+    "mocha": "^2.5.3"
   }
 }
