@@ -1,6 +1,6 @@
 {
   "name": "praetor",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "dependencies": {
     "acorn": {
       "version": "3.2.0",
