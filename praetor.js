@@ -1,6 +1,7 @@
 'use strict';
 
 const election = require('./lib/election');
+const logger = require('./lib/logger');
 
 const _ = require('lodash');
 const EventEmitter = require('eventemitter2').EventEmitter2;
@@ -18,6 +19,10 @@ class Praetor extends EventEmitter {
             initial_delay: undefined,
             leader_eligible: true
         });
+
+        if(this.options.logger) {
+            logger.logger = this.options.logger;
+        }
 
         this.options.legiond = this.options.legiond || {};
         this.options.legiond.attributes = this.options.legiond.attributes || {};
