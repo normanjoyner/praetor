@@ -74,9 +74,13 @@ class Praetor extends EventEmitter {
     get_controlling_leader() {
         const peers = this.legiond.get_peers();
         peers.push(this.legiond.get_attributes());
-        const controlling_leaders = _.filter(peers, peer => peer.praetor && peer.praetor.leader);
 
-        return controlling_leaders[0];
+        const sorted_controlling_leaders = _.chain(peers)
+            .filter(peer => peer.praetor && peer.praetor.leader)
+            .sortBy(leader => leader.praetor.start_time)
+            .value();
+
+        return sorted_controlling_leaders[0];
     }
 
     is_controlling_leader() {
