@@ -24,7 +24,7 @@
   "homepage": "https://github.com/containership/praetor",
   "dependencies": {
     "eventemitter2": "^0.4.14",
-    "legiond": "3.0.0",
+    "legiond": "3.1.0",
     "lodash": "^2.4.1"
   },
   "devDependencies": {

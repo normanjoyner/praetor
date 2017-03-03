@@ -559,9 +559,9 @@ jsonpointer@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/jsonpointer/-/jsonpointer-4.0.0.tgz#6661e161d2fc445f19f98430231343722e1fcbd5"
 
-legiond@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/legiond/-/legiond-3.0.0.tgz#578a49d51d2b585c2dd7a43276c032c545344ced"
+legiond@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/legiond/-/legiond-3.1.0.tgz#c99da536a99b196d8556fdd406a1f86c80ff1212"
   dependencies:
     async "^0.9.0"
     eventemitter2 "^0.4.13"

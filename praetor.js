@@ -34,6 +34,39 @@ class Praetor extends EventEmitter {
         };
 
         this.legiond = new LegionD(this.options.legiond);
+
+        // define praetor gatekeeper function
+        this.gatekeeper = (data, callback) => {
+            // reject nodes without praetor attributes
+            if(!data.praetor) {
+                return callback(new Error(`Rejecting connection attempt from ${data.id}. Node is missing necessary praetor attributes`));
+            }
+
+            // always accept non-controlling leaders
+            if(!data.praetor.leader) {
+                return callback();
+            }
+
+            // controlling leader nodes can accept all nodes and negotiate a controlling leader
+            if(this.is_controlling_leader()) {
+                return callback();
+            }
+
+            // get controlling leader
+            const controlling_leader = this.get_controlling_leader();
+
+            // reject joins from controlling leaders if already connected to another controlling leader
+            // this prevents a situtation where a node is connected to two separate controlling leaders
+            if(controlling_leader && controlling_leader.id !== data.id) {
+                return callback(new Error(`Rejecting connection attempt from ${data.id}. Already connected to controlling leader ${controlling_leader.id}`));
+            } else {
+                return callback();
+            }
+        };
+
+        // add praetor gatekeeper
+        this.legiond.add_gatekeeper(this.gatekeeper);
+
         this.options.initial_delay = this.legiond.network.options.tcp_timeout + 1000;
         election.Configure(this);
 
@@ -58,9 +91,8 @@ class Praetor extends EventEmitter {
             }
         });
 
-        this.legiond.on('error', (error) => {
-            self.emit('error', error);
-        });
+        // catch and ignore legiond errors
+        this.legiond.on('error', (/*error*/) => {});
     }
 
     promote() {
@@ -85,7 +117,6 @@ class Praetor extends EventEmitter {
 
     is_controlling_leader() {
         const attributes = this.legiond.get_attributes();
-
         return attributes.praetor.leader;
     }
 }
